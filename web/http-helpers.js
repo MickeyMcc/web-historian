@@ -11,11 +11,28 @@ exports.headers = {
 };
 
 exports.serveAssets = function(res, asset, callback) {
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...),
-  // css, or anything that doesn't change often.)
+  fs.readFile(asset, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      callback(data);
+    }
+  });
 };
 
-
-
 // As you progress, keep thinking about what helper functions you can put here!
+exports.urlStatus = function(url, callback) {
+  archive.isUrlArchived(url, (filePresent) => {
+    if (filePresent) { //url has a file archived
+      callback('archived');
+    } else {
+      archive.isUrlInList(url, (urlPresent) => {
+        if (urlPresent) { //url not archived, is in list
+          callback('queued');
+        } else {
+          callback('notFound'); //brand new url!
+        }
+      }); 
+    }
+  });
+};
