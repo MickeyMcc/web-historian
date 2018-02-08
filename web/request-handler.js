@@ -45,6 +45,7 @@ exports.handleRequest = function (req, res) {
     // end message with 302 found message for some reason
     req.on('end', function() {
       var url = qs.parse(newData).url;
+      
       httpHelpers.urlStatus(url, (status) => {
         if (status === 'archived') {
           console.log('ARCHIVED FILE POSTED');
@@ -65,7 +66,9 @@ exports.handleRequest = function (req, res) {
 
           archive.addUrlToList(url, () => {
             res.writeHead(302, httpHelpers.headers);
-            res.end();
+            httpHelpers.serveAssets(res, path.join(__dirname, 'public/loading.html'), data => {
+              res.end(data);
+            });
           });
         }
       });
