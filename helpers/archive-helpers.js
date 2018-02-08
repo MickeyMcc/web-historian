@@ -44,6 +44,7 @@ exports.readListOfUrls = function() {
 
 exports.isUrlInList = function(url) {
   return new Promise(function(resolve, reject) {
+    console.log('checking if in list');
     exports.readListOfUrls()
       .then(function(urlArray) {
         var found;
@@ -52,7 +53,7 @@ exports.isUrlInList = function(url) {
         } else {
           found = false;
         }
-        return found;
+        resolve(found);
       });
   });
 };
@@ -77,14 +78,14 @@ exports.addUrlToList = function(url) {
 exports.isUrlArchived = function(url) {
   return new Promise(function(resolve, reject) {
     var found;
+    console.log('checking if url is archived');
     fs.stat(path.join(exports.paths.archivedSites, url), (err) => {
       if (err) {
         found = false;
-        resolve(false);
       } else {
         found = true;
-        resolve(false);
       }
+      resolve(true);
     });
   });
 };

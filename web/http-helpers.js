@@ -28,18 +28,24 @@ exports.urlStatus = function(url) {
   return new Promise(function(resolve, reject) {
     archive.isUrlArchived(url)
       .then(function(found) {
+        console.log(found, 'found in archives');
         if (found) {
+          console.log(url, 'is archived');
           urlStatus = 'archived'; 
         } else {
           archive.isUrlInList(url)
             .then(function(found) {
+              console.log(found, 'found in list');
               if (found) {
                 urlStatus = 'queued';
               } else {
                 urlStatus = 'notFound';
               }
+              console.log('urlstatus', urlStatus);
+              resolve(urlStatus);
             });
         }
+        console.log('urlstatus', urlStatus);
         resolve(urlStatus);
       });
   });

@@ -13,7 +13,7 @@ var ip = '127.0.0.1';
 var server = http.createServer(handler.handleRequest);
 
 archive.readListOfUrls()
-  .then(archive.downloadUrls(urlArray));
+  .then(urlArray => archive.downloadUrls(urlArray));
 
 cron.cron.start();
 
