@@ -7,30 +7,35 @@ var qs = require('querystring');
 exports.handleRequest = function (req, res) {
   if (req.method === 'GET') {
     if (req.url === '/') {
-      httpHelpers.serveAssets(res, path.join(__dirname, 'public/index.html'), data => {
-        res.end(data);
-      });
+      httpHelpers.serveAssets(res, path.join(__dirname, 'public/index.html'))
+        .then(function(data) {
+          res.writeHead(200, httpHelpers.headers);
+          res.end(data);      
+        });
       //is a request for a specific site
     } else {
       //check to see if it has already been archived
-      httpHelpers.urlStatus(req.url, (status) => {
-        if (status === 'archived') {
-          httpHelpers.serveAssets(res, path.join(archive.paths.archivedSites, req.url), data => {
-            res.writeHead(200, httpHelpers.headers);
-            res.end(data);
-          });
-        }
-        if (status === 'queued') {
-          httpHelpers.serveAssets(res, path.join(__dirname, 'public/loading.html'), data => {
-            res.writeHead(303, httpHelpers.headers);
-            res.end(data);
-          });
-        }
-        if (status === 'notFound') {
-          res.writeHead(404, httpHelpers.headers);
-          res.end();
-        }
-      });
+      httpHelpers.urlStatus(req.url)
+        .then(function(status) {
+          if (status === 'archived') {
+            httpHelpers.serveAssets(res, path.join(archive.paths.archivedSites, req.url))      
+              .then(function(data) {
+                res.writeHead(200, httpHelpers.headers);
+                res.end(data);
+              });
+          }
+          if (status === 'queued') {
+            httpHelpers.serveAssets(res, path.join(__dirname, 'public/loading.html'))      
+              .then(function(data) {
+                res.writeHead(303, httpHelpers.headers);
+                res.end(data);
+              });
+          }
+          if (status === 'notFound') {
+            res.writeHead(404, httpHelpers.headers);
+            res.end();
+          }
+        });
     }
   } else if (req.method === 'POST' ) {
     var newData = '';

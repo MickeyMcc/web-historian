@@ -12,8 +12,8 @@ var port = 8080;
 var ip = '127.0.0.1';
 var server = http.createServer(handler.handleRequest);
 
-archive.readListOfUrls((urls) => archive.downloadUrls(urls));
-
+archive.readListOfUrls()
+  .then(archive.downloadUrls(urlArray));
 
 cron.cron.start();
 
